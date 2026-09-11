@@ -31,7 +31,7 @@ Skill 适用于 Vue 3 项目中的以下文件：
 
 ```text
 .
-├── .scratch/frontend-coding-standards-skill/
+├── .agents/skills/frontend-coding-standards/
 │   ├── SKILL.md                  # Skill 入口与执行流程
 │   ├── rules.yaml                # 编码规则唯一真源
 │   ├── RULES.md                  # 由规则真源生成的阅读视图
@@ -78,26 +78,26 @@ $frontend-coding-standards 按项目规范实现这个 Vue 3 组件
 在仓库根目录执行全部测试：
 
 ```bash
-python -m unittest discover -s .scratch/frontend-coding-standards-skill/tests -v
+python -m unittest discover -s .agents/skills/frontend-coding-standards/tests -v
 ```
 
 验证规则真源：
 
 ```bash
-python .scratch/frontend-coding-standards-skill/scripts/validate_rules.py
+python .agents/skills/frontend-coding-standards/scripts/validate_rules.py
 ```
 
 验证试点验收与版本治理材料：
 
 ```bash
-python .scratch/frontend-coding-standards-skill/scripts/validate_pilot.py
+python .agents/skills/frontend-coding-standards/scripts/validate_pilot.py
 ```
 
 重新生成阅读视图：
 
 ```bash
-python .scratch/frontend-coding-standards-skill/scripts/generate_rules_view.py
-python .scratch/frontend-coding-standards-skill/scripts/generate_pilot_view.py
+python .agents/skills/frontend-coding-standards/scripts/generate_rules_view.py
+python .agents/skills/frontend-coding-standards/scripts/generate_pilot_view.py
 ```
 
 `RULES.md` 和 `PILOT.md` 均为自动生成文件，不应直接编辑。
@@ -109,7 +109,7 @@ python .scratch/frontend-coding-standards-skill/scripts/generate_pilot_view.py
 - `1.0.0`：团队插件正式发布并承诺兼容性，由指定前端负责人审批规则变更和发布。
 
 详细的验收场景、升级条件和维护权边界见
-`.scratch/frontend-coding-standards-skill/PILOT.md`。
+`.agents/skills/frontend-coding-standards/PILOT.md`。
 
 ## 贡献规则
 
