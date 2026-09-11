@@ -1,0 +1,13 @@
+schema_version: 1
+rule_version: "0.0.1"
+project: example-vue3-app
+overrides:
+  - rule_id: FCS-007
+    operation: add_exception
+    exception: 由上游生成器维护的文件保持生成器输出，不进行空白行整改。
+    reason: 直接编辑会在下次生成时丢失，并扩大当前任务范围。
+    owner: project-frontend-owner
+  - rule_id: FCS-011
+    operation: downgrade_to_guidance
+    reason: 项目现有模板格式化器暂时无法稳定保留逐行属性布局。
+    owner: project-frontend-owner

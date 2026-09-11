@@ -1,0 +1,137 @@
+schema_version: 1
+rule_version: "0.0.1"
+rule_source: rules.yaml
+reading_view: RULES.md
+project_override_example: overrides.example.yaml
+
+acceptance:
+  allowed_statuses: [NOT_RUN, PASS, FAIL, BLOCKED]
+  evidence_policy: PASS 必须记录可复查的任务输入、改动或命令结果；未实际执行时保持 NOT_RUN。
+  scenarios:
+    - id: FCS-ACC-001
+      capability: explicit_trigger
+      status: NOT_RUN
+      setup: 准备一个包含 Vue 3 SFC 的一次性试点项目。
+      action: 显式调用 $frontend-coding-standards 完成一处 Vue 3 代码修改。
+      expected:
+        - 交付反馈将触发方式记录为显式。
+        - 触及代码应用当前版本的 ACTIVE 规则。
+      evidence: []
+    - id: FCS-ACC-002
+      capability: automatic_trigger
+      status: NOT_RUN
+      setup: 准备一个 Vue 3 代码修改任务，但不显式点名 Skill。
+      action: 请求修改 .vue、.ts、.js、.css、.less 或 .scss 文件。
+      expected:
+        - Skill 由任务描述自动匹配。
+        - 交付反馈将触发方式记录为自动。
+      evidence: []
+    - id: FCS-ACC-003
+      capability: touched_code_only
+      status: NOT_RUN
+      setup: 在目标文件和未触及文件中预置存量规范债务。
+      action: 仅请求修改目标文件中的一个明确代码区域。
+      expected:
+        - 规范修正限于新建或直接触及的代码。
+        - 未触及债务只报告，不产生无关改动。
+      evidence: []
+    - id: FCS-ACC-004
+      capability: pending_not_executed
+      status: NOT_RUN
+      setup: 选择会涉及至少一条 PENDING 规则的任务。
+      action: 在未提供额外规则解释的情况下执行任务。
+      expected:
+        - PENDING 规则不被执行或提升强度。
+        - 实现必须依赖该规则时请求澄清，否则在交付反馈中记录。
+      evidence: []
+    - id: FCS-ACC-005
+      capability: rule_strength
+      status: NOT_RUN
+      setup: 选择同时涉及 ACTIVE MUST、GUIDANCE 和 VERIFY 的任务。
+      action: 完成代码修改并交付。
+      expected:
+        - MUST 违规在触及代码中修正后再交付。
+        - GUIDANCE 可因项目约定偏离，但记录原因。
+        - VERIFY 通过项目既有命令执行，不被当作格式规则。
+      evidence: []
+    - id: FCS-ACC-006
+      capability: conflict_priority
+      status: NOT_RUN
+      setup: 准备项目自动化配置与 ACTIVE 规则冲突的触及代码。
+      action: 执行普通代码修改，不授权工程格式覆盖。
+      expected:
+        - ACTIVE 规则在触及代码中优先。
+        - 项目配置和未触及文件保持不变，冲突被记录。
+      evidence: []
+    - id: FCS-ACC-007
+      capability: format_override_authorization
+      status: NOT_RUN
+      setup: 准备需要调整 ESLint、Prettier 或 Stylelint 的项目。
+      action: 分别执行普通代码任务和明确要求接入规范或覆盖工程格式的任务。
+      expected:
+        - 普通任务不修改工程格式配置。
+        - 只有明确授权的任务才修改相关配置。
+      evidence: []
+    - id: FCS-ACC-008
+      capability: full_repo_migration_authorization
+      status: NOT_RUN
+      setup: 准备配置变更会影响全库校验或工具无法限定文件范围的项目。
+      action: 仅授权工程格式覆盖，不授权全库迁移。
+      expected:
+        - 在影响说明和单独授权前不执行全库格式化或迁移。
+        - 配置接入与存量迁移作为两个独立决策记录。
+      evidence: []
+    - id: FCS-ACC-009
+      capability: rule_source_and_reading_view
+      status: NOT_RUN
+      setup: 修改 rules.yaml 中一个可识别字段，并在临时位置生成阅读视图。
+      action: 运行规则结构验证和阅读视图生成检查。
+      expected:
+        - rules.yaml 满足版本、唯一 ID、字段、枚举和来源约束。
+        - RULES.md 与从 rules.yaml 生成的内容完全一致。
+      evidence: []
+    - id: FCS-ACC-010
+      capability: project_override_structure
+      status: NOT_RUN
+      setup: 分别准备有效例外和尝试改写全局规则的 overrides.yaml。
+      action: 运行项目例外结构验证。
+      expected:
+        - 仅允许新增例外或降级为 GUIDANCE，并要求原因与负责人。
+        - 修改、删除或替换全局规则的操作验证失败。
+      evidence: []
+
+governance:
+  release_path: ["0.0.1", "0.1.0", "1.0.0"]
+  releases:
+    - version: "0.0.1"
+      channel: workspace-pilot
+      change_approver: local-maintainer
+      release_owner: local-maintainer
+      entry_criteria:
+        - 规则真源、Skill、阅读视图和结构验证可在当前工作区使用。
+      exit_criteria:
+        - 在真实 Vue 3 任务中完成验收矩阵并保存证据。
+        - 高影响 FAIL 或 BLOCKED 项已关闭或明确接受。
+    - version: "0.1.0"
+      channel: local-default
+      change_approver: local-maintainer
+      release_owner: local-maintainer
+      entry_criteria:
+        - 首轮规则清单、Skill 和真实项目验证完成。
+        - 规则、例外和自动触发行为在试点记录中趋于稳定。
+      exit_criteria:
+        - 本机多个 Vue 3 项目验证通过，团队采用边界与负责人已确定。
+    - version: "1.0.0"
+      channel: team-plugin
+      change_approver: designated-frontend-lead
+      release_owner: designated-frontend-lead
+      entry_criteria:
+        - 团队插件安装、升级和回退流程已验证。
+        - 兼容性承诺、项目例外机制和发布审批生效。
+      exit_criteria:
+        - 后续规则变更遵循团队发布与兼容性策略。
+  maintenance:
+    pilot_rule_owner: local-maintainer
+    team_change_approver: designated-frontend-lead
+    team_release_owner: designated-frontend-lead
+    contributor_policy: 普通成员提交带证据的建议，由当前阶段审批人合并；不得直接修改已发布真源。
