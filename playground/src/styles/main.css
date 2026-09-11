@@ -1,0 +1,472 @@
+:root {
+  color: #17223b;
+  background: #f4f7f9;
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 3px solid #ff9e66;
+  outline-offset: 3px;
+}
+
+.login-page {
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: minmax(0, 1.08fr) minmax(420px, 0.92fr);
+}
+
+.brand-panel {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  padding: clamp(40px, 7vw, 104px);
+  flex-direction: column;
+  justify-content: center;
+  color: #f8fbff;
+  background: #123f5d;
+}
+
+.brand-panel::before {
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 50%;
+  content: "";
+  inset: -190px -150px auto auto;
+}
+
+.brand-panel::after {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 50%;
+  content: "";
+  inset: -60px -20px auto auto;
+}
+
+.brand-mark {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 56px;
+  border: 1px solid rgb(255 255 255 / 38%);
+  border-radius: 50%;
+}
+
+.brand-mark::before,
+.brand-mark::after {
+  position: absolute;
+  background: #f8fbff;
+  content: "";
+}
+
+.brand-mark::before {
+  width: 1px;
+  height: 68px;
+  top: -11px;
+  left: 23px;
+}
+
+.brand-mark::after {
+  width: 68px;
+  height: 1px;
+  top: 23px;
+  left: -11px;
+}
+
+.brand-mark-core {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff8248;
+  inset: 18px;
+}
+
+.eyebrow,
+.step-label {
+  margin: 0 0 18px;
+  font-family: Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.eyebrow {
+  color: #b8d7e6;
+}
+
+.brand-panel h1,
+.dashboard-content h1 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(4.2rem, 9vw, 8.6rem);
+  font-weight: 400;
+  line-height: 0.83;
+  letter-spacing: -0.065em;
+}
+
+.brand-summary {
+  max-width: 360px;
+  margin: 34px 0 80px;
+  color: #c8dce7;
+  font-size: 1.04rem;
+  line-height: 1.8;
+}
+
+.route-line {
+  position: relative;
+  width: min(430px, 90%);
+  height: 1px;
+  background: rgb(255 255 255 / 28%);
+}
+
+.route-point {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  border: 2px solid #123f5d;
+  border-radius: 50%;
+  background: #ff8248;
+  box-shadow: 0 0 0 1px #ff8248;
+  top: -5px;
+}
+
+.route-point-start {
+  left: 0;
+}
+
+.route-point-end {
+  right: 0;
+  background: #f8fbff;
+  box-shadow: 0 0 0 1px #f8fbff;
+}
+
+.route-label {
+  position: absolute;
+  top: 14px;
+  left: 0;
+  color: #b8d7e6;
+  font-family: Consolas, monospace;
+  font-size: 0.66rem;
+}
+
+.route-label-end {
+  right: 0;
+  left: auto;
+}
+
+.login-panel {
+  display: grid;
+  padding: 40px;
+  place-items: center;
+  background:
+    linear-gradient(rgb(18 63 93 / 4%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(18 63 93 / 4%) 1px, transparent 1px),
+    #f4f7f9;
+  background-size: 32px 32px;
+}
+
+.login-card {
+  width: min(100%, 440px);
+  padding: clamp(30px, 5vw, 58px);
+  border-top: 4px solid #ff8248;
+  background: rgb(255 255 255 / 90%);
+  box-shadow: 0 30px 80px rgb(18 63 93 / 12%);
+}
+
+.step-label {
+  color: #d85f2a;
+}
+
+.login-card h2 {
+  margin: 0;
+  color: #123f5d;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.5rem, 5vw, 3.7rem);
+  font-weight: 400;
+  letter-spacing: -0.045em;
+}
+
+.login-intro {
+  margin: 16px 0 38px;
+  color: #617181;
+  line-height: 1.75;
+}
+
+.login-form {
+  display: grid;
+  gap: 12px;
+}
+
+.login-form label {
+  margin-top: 10px;
+  color: #354a5b;
+  font-size: 0.86rem;
+  font-weight: 650;
+}
+
+.login-form input {
+  width: 100%;
+  height: 50px;
+  padding: 0 15px;
+  border: 1px solid #cdd8de;
+  border-radius: 2px;
+  color: #17223b;
+  background: #fbfdfe;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.login-form input:hover,
+.login-form input:focus {
+  border-color: #52809a;
+  box-shadow: 0 0 0 4px rgb(82 128 154 / 10%);
+}
+
+.error-message {
+  margin: 4px 0 0;
+  color: #b43c28;
+  font-size: 0.86rem;
+}
+
+.login-button {
+  display: flex;
+  width: 100%;
+  height: 54px;
+  margin-top: 20px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 2px;
+  align-items: center;
+  justify-content: space-between;
+  color: #ffffff;
+  background: #123f5d;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.login-button:hover:not(:disabled) {
+  background: #0c3048;
+  transform: translateY(-2px);
+}
+
+.login-button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.demo-account {
+  display: flex;
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e9ed;
+  align-items: center;
+  justify-content: space-between;
+  color: #75838f;
+  font-size: 0.78rem;
+}
+
+.demo-account code {
+  color: #123f5d;
+  font-family: Consolas, monospace;
+  font-weight: 700;
+}
+
+.dashboard-page {
+  min-height: 100vh;
+  color: #17223b;
+  background: #f4f7f9;
+}
+
+.dashboard-header {
+  display: flex;
+  height: 76px;
+  padding: 0 clamp(24px, 6vw, 88px);
+  border-bottom: 1px solid #d8e1e6;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.compact-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #123f5d;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.12rem;
+  text-decoration: none;
+}
+
+.compact-brand-mark {
+  width: 16px;
+  height: 16px;
+  border: 4px solid #123f5d;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px #ff8248;
+}
+
+.logout-button {
+  padding: 9px 15px;
+  border: 1px solid #b9c8d0;
+  border-radius: 2px;
+  color: #123f5d;
+  background: transparent;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  border-color: #123f5d;
+  background: #ffffff;
+}
+
+.dashboard-content {
+  padding: clamp(70px, 10vw, 144px) clamp(24px, 9vw, 136px);
+}
+
+.dark-eyebrow {
+  color: #d85f2a;
+}
+
+.dashboard-content h1 {
+  max-width: 920px;
+  color: #123f5d;
+  font-size: clamp(3.5rem, 8vw, 7.2rem);
+  line-height: 0.9;
+}
+
+.dashboard-summary {
+  max-width: 580px;
+  margin: 34px 0 60px;
+  color: #617181;
+  font-size: 1.08rem;
+  line-height: 1.8;
+}
+
+.status-grid {
+  display: grid;
+  max-width: 1000px;
+  border-top: 1px solid #c8d4da;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.status-card {
+  min-height: 170px;
+  padding: 24px;
+  border-right: 1px solid #c8d4da;
+}
+
+.status-card:first-child {
+  border-left: 1px solid #c8d4da;
+}
+
+.status-index {
+  color: #d85f2a;
+  font-family: Consolas, monospace;
+  font-size: 0.7rem;
+}
+
+.status-card h2 {
+  margin: 32px 0 12px;
+  color: #5f7180;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.status-card p {
+  margin: 0;
+  color: #123f5d;
+  font-family: Consolas, monospace;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: #27a570;
+}
+
+@media (max-width: 860px) {
+  .login-page {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-panel {
+    min-height: 46vh;
+    padding: 44px 28px 64px;
+  }
+
+  .brand-mark {
+    margin-bottom: 36px;
+  }
+
+  .brand-panel h1 {
+    font-size: clamp(4rem, 20vw, 6rem);
+  }
+
+  .brand-summary {
+    margin: 24px 0 54px;
+  }
+
+  .login-panel {
+    padding: 0;
+    background: #ffffff;
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: none;
+    box-shadow: none;
+  }
+
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .status-card,
+  .status-card:first-child {
+    border-right: 1px solid #c8d4da;
+    border-bottom: 1px solid #c8d4da;
+    border-left: 1px solid #c8d4da;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
