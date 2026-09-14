@@ -1,4 +1,4 @@
-"""Generate the review-only pilot acceptance and governance view."""
+"""根据 pilot.yaml 生成只读的试点验收与版本治理文档。"""
 
 from __future__ import annotations
 
@@ -10,6 +10,7 @@ import yaml
 
 
 def generate(source_path: Path, output_path: Path) -> None:
+    """读取试点配置，并将验收场景及治理信息渲染为 Markdown。"""
     document: dict[str, Any] = yaml.safe_load(source_path.read_text(encoding="utf-8"))
     acceptance = document["acceptance"]
     governance = document["governance"]
@@ -31,6 +32,7 @@ def generate(source_path: Path, output_path: Path) -> None:
         "## 验收场景",
         "",
     ]
+    # 每个验收场景独立成节，便于评审时逐项核对状态、预期和证据。
     for scenario in acceptance["scenarios"]:
         lines.extend(
             [
@@ -47,6 +49,7 @@ def generate(source_path: Path, output_path: Path) -> None:
             ]
         )
 
+    # 按配置中的发布顺序输出版本路径，保留各阶段的职责与准入、退出条件。
     lines.extend(["## 版本路径", ""])
     for release in governance["releases"]:
         lines.extend(
@@ -78,6 +81,8 @@ def generate(source_path: Path, output_path: Path) -> None:
 
 
 def main() -> int:
+    """解析可选输入、输出路径，并执行文档生成。"""
+    # 默认以 skill 根目录中的真源和阅读视图为输入、输出。
     root = Path(__file__).parents[1]
     source_path = Path(sys.argv[1]) if len(sys.argv) > 1 else root / "pilot.yaml"
     output_path = Path(sys.argv[2]) if len(sys.argv) > 2 else root / "PILOT.md"

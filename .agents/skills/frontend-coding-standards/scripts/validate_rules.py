@@ -1,4 +1,4 @@
-"""Validate the portable structure of the coding-standards rule source."""
+"""校验前端编码规范规则真源及项目例外配置的可移植结构。"""
 
 from __future__ import annotations
 
@@ -10,6 +10,7 @@ from typing import Any
 import yaml
 
 
+# 单条规则必须具备的完整字段集合。
 REQUIRED_RULE_FIELDS = {
     "id",
     "status",
@@ -29,7 +30,7 @@ OVERRIDE_FIELDS = {"rule_id", "operation", "reason", "owner", "exception"}
 
 
 def validate(source_path: Path) -> list[str]:
-    """Return human-readable validation errors for one rule source."""
+    """校验一个规则真源文件，并返回便于人工阅读的全部错误。"""
     try:
         document = yaml.safe_load(source_path.read_text(encoding="utf-8"))
     except (OSError, yaml.YAMLError) as error:
@@ -48,6 +49,7 @@ def validate(source_path: Path) -> list[str]:
     if not isinstance(rules, list) or not rules:
         return errors + ["Top-level rules must be a non-empty list."]
 
+    # 单次遍历同时检查字段完整性、规则 ID 唯一性和各字段的数据类型。
     seen_ids: set[str] = set()
     for index, rule in enumerate(rules, start=1):
         label = f"Rule #{index}"
@@ -100,7 +102,7 @@ def validate(source_path: Path) -> list[str]:
 
 
 def validate_overrides(override_path: Path, source_path: Path) -> list[str]:
-    """Validate project exceptions without permitting global rule mutation."""
+    """校验项目级例外，并确保例外不会修改全局规则定义。"""
     try:
         override_document = yaml.safe_load(override_path.read_text(encoding="utf-8"))
         rule_document = yaml.safe_load(source_path.read_text(encoding="utf-8"))
@@ -110,6 +112,7 @@ def validate_overrides(override_path: Path, source_path: Path) -> list[str]:
     if not isinstance(override_document, dict):
         return ["Override source must be a mapping."]
     errors: list[str] = []
+    # 使用字段白名单限制例外文件的能力边界，避免借此改写全局配置。
     unknown_document_fields = set(override_document) - OVERRIDE_DOCUMENT_FIELDS
     if unknown_document_fields:
         errors.append(
@@ -126,6 +129,7 @@ def validate_overrides(override_path: Path, source_path: Path) -> list[str]:
         errors.append("project must be a non-empty string.")
 
     rules = rule_document.get("rules", []) if isinstance(rule_document, dict) else []
+    # 项目例外只能引用已启用规则，PENDING 规则仍需先完成全局决策。
     active_rule_ids = {
         rule.get("id")
         for rule in rules
@@ -169,6 +173,7 @@ def validate_overrides(override_path: Path, source_path: Path) -> list[str]:
 
 
 def main() -> int:
+    """校验指定规则文件，并通过退出码报告结果。"""
     source_path = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).parents[1] / "rules.yaml"
     errors = validate(source_path)
     if errors:

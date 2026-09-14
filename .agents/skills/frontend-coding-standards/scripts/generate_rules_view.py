@@ -1,4 +1,4 @@
-"""Generate the review-only Markdown view from rules.yaml."""
+"""根据 rules.yaml 生成只读的规则 Markdown 阅读视图。"""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ import yaml
 
 
 def format_source(source: dict[str, Any]) -> str:
+    """将规则的 Markdown 与 PDF 来源整理为一段可读文本。"""
     markdown = source["markdown"]
     pdf = source["pdf"]
     pages = ", ".join(str(page) for page in pdf["pages"])
@@ -21,9 +22,11 @@ def format_source(source: dict[str, Any]) -> str:
 
 
 def generate(source_path: Path, output_path: Path) -> None:
+    """读取规则真源，按状态分组后生成 Markdown 文档。"""
     document = yaml.safe_load(source_path.read_text(encoding="utf-8"))
     metadata = document["metadata"]
     rules_by_status: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    # 先按状态归类，确保阅读视图固定以 ACTIVE、PENDING 的顺序展示。
     for rule in document["rules"]:
         rules_by_status[rule["status"]].append(rule)
 
@@ -62,6 +65,8 @@ def generate(source_path: Path, output_path: Path) -> None:
 
 
 def main() -> int:
+    """解析可选输入、输出路径，并执行规则阅读视图生成。"""
+    # 默认以 skill 根目录中的真源和阅读视图为输入、输出。
     root = Path(__file__).parents[1]
     source_path = Path(sys.argv[1]) if len(sys.argv) > 1 else root / "rules.yaml"
     output_path = Path(sys.argv[2]) if len(sys.argv) > 2 else root / "RULES.md"

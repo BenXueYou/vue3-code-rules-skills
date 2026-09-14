@@ -1,4 +1,4 @@
-"""Validate pilot acceptance coverage, governance, and linked artifacts."""
+"""校验试点验收覆盖、版本治理配置以及关联产物的一致性。"""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ from typing import Any
 import yaml
 
 
+# 试点验收必须覆盖的关键行为，缺少任一项都代表验收范围不完整。
 REQUIRED_CAPABILITIES = {
     "explicit_trigger",
     "automatic_trigger",
@@ -28,6 +29,7 @@ RELEASE_CHANNELS = ["workspace-pilot", "local-default", "team-plugin"]
 
 
 def load_module(name: str, path: Path):
+    """按文件路径动态加载模块，供组合校验器复用其公开函数。"""
     spec = importlib.util.spec_from_file_location(name, path)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"Unable to load {path}")
@@ -37,10 +39,12 @@ def load_module(name: str, path: Path):
 
 
 def non_empty_text(value: Any) -> bool:
+    """判断值是否为去除首尾空白后仍有内容的字符串。"""
     return isinstance(value, str) and bool(value.strip())
 
 
 def validate_bundle(root: Path) -> list[str]:
+    """校验 skill 根目录下的试点配置，并返回所有可读错误。"""
     errors: list[str] = []
     pilot_path = root / "pilot.yaml"
     try:
@@ -64,6 +68,7 @@ def validate_bundle(root: Path) -> list[str]:
     if document.get("rule_version") != rules_document.get("version"):
         errors.append("Pilot rule_version must match rules.yaml version.")
 
+    # 验收部分既校验字段结构，也检查必需能力是否全部被场景覆盖。
     acceptance = document.get("acceptance")
     if not isinstance(acceptance, dict):
         errors.append("acceptance must be a mapping.")
@@ -108,6 +113,7 @@ def validate_bundle(root: Path) -> list[str]:
             if missing:
                 errors.append(f"Acceptance coverage is missing: {', '.join(sorted(missing))}.")
 
+    # 治理部分约束固定的版本晋升路径，以及各阶段的审批和发布职责。
     governance = document.get("governance")
     if not isinstance(governance, dict):
         errors.append("governance must be a mapping.")
@@ -149,6 +155,7 @@ def validate_bundle(root: Path) -> list[str]:
             if not non_empty_text(maintenance.get("contributor_policy")):
                 errors.append("maintenance contributor_policy must be non-empty.")
 
+    # 复用规则校验器，保证试点入口同时覆盖规则真源和项目例外样例。
     rule_validator = load_module("pilot_rule_validator", root / "scripts" / "validate_rules.py")
     errors.extend(f"rules.yaml: {error}" for error in rule_validator.validate(rule_source))
     errors.extend(
@@ -157,6 +164,7 @@ def validate_bundle(root: Path) -> list[str]:
     )
     rules_generator = load_module("pilot_rules_generator", root / "scripts" / "generate_rules_view.py")
     pilot_generator = load_module("pilot_view_generator", root / "scripts" / "generate_pilot_view.py")
+    # 在临时目录重新生成阅读视图，确认仓库中的 Markdown 没有偏离 YAML 真源。
     try:
         with tempfile.TemporaryDirectory() as temp_dir:
             generated_rules_path = Path(temp_dir) / "RULES.md"
@@ -173,6 +181,7 @@ def validate_bundle(root: Path) -> list[str]:
 
 
 def main() -> int:
+    """校验指定的 skill 根目录，并通过退出码报告结果。"""
     root = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).parents[1]
     errors = validate_bundle(root)
     if errors:
