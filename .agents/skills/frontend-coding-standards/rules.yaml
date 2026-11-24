@@ -5,6 +5,7 @@ metadata:
   source_of_truth: rules.yaml
   status_policy: ACTIVE 可执行；PENDING 仅记录证据，等待澄清后才能执行。
   strength_policy: 必须/不允许为 MUST；推荐/统一/采用为 GUIDANCE；项目既有校验命令为 VERIFY。
+  source_policy: 原始规则保留 Markdown 和 PDF 证据；维护者新增规则记录 Markdown 需求来源及参考规范，不虚构 PDF 来源。
 
 rules:
   - id: FCS-001
@@ -357,3 +358,37 @@ rules:
     sources:
       markdown: { file: 前端开发编码规范.md, section: "#### 10.全局弹窗组件的设计方式" }
       pdf: { file: 前端开发编码规范.pdf, pages: [14, 15] }
+  - id: FCS-036
+    status: ACTIVE
+    strength: MUST
+    applies_to: [Vue SFC template, TypeScript 与 JavaScript 渲染函数, 交互组件]
+    rule: 生成或修改交互控件时必须检查可访问名称；缺少有效名称且没有可关联的可见标签时，自动补足 aria-label。
+    decision_criteria: >-
+      逐一检查触及代码中的按钮、链接、表单控件及其他需要名称的交互元素。
+      保留已有有效的 aria-label、aria-labelledby、关联 label 或可作为名称的控件文字；
+      表单控件优先关联可见 label，其他有可见标签的控件优先使用 aria-labelledby，
+      无可用标签的纯图标按钮、无文字链接和无标签输入控件必须补足非空 aria-label。
+      名称使用与页面一致的语言及项目既有国际化方式，表达业务动作或用途；
+      存在可见标签文字时，名称必须包含该文字；×、箭头等作为图标的符号按实际用途命名。
+      重复操作需要区分对象时复用现有展示字段，
+      不使用变量名、图标名或“按钮”等泛称，不为命名新增数据请求或改变标识映射、事件、请求与提交逻辑。
+      名称随动作变化时使用动态绑定，例如“展开筛选”与“收起筛选”；状态另用适用的 ARIA 状态属性表达。
+      placeholder、title 或 tooltip 不能作为唯一标签方案。
+      自定义及第三方组件先核对已有 API、实现和属性透传路径，确保名称落在实际可聚焦的交互节点，
+      不能仅因组件标签上写了属性就判定生效。
+      交付前复核每个触及控件的名称来源、动态状态及生效节点；
+      有可运行环境时检查渲染后 DOM 或可访问性树，无环境时明确记录运行验证未执行。
+    exceptions: >-
+      已有有效名称的控件无需重复添加 aria-label；普通布局容器、静态文本、装饰性图标和隐藏元素不批量添加，
+      图片沿用适用的 alt 语义。未触及的存量代码仅报告。
+      无法从需求或上下文确认用途，或无法确认组件命名 API、透传路径时，记录具体未决点并说明尚未验证，
+      不猜测名称、虚构组件属性或将该项标记为通过。
+    sources:
+      markdown: { file: docs/specs/frontend-coding-standards-skill.md, section: "## 可访问名称约束的需求来源" }
+      references:
+        - title: W3C APG — Providing Accessible Names and Descriptions
+          url: https://www.w3.org/WAI/ARIA/apg/practices/names-and-descriptions/
+        - title: W3C WAI — Labeling Controls
+          url: https://www.w3.org/WAI/tutorials/forms/labels/
+        - title: W3C WCAG — Label in Name
+          url: https://www.w3.org/WAI/WCAG22/Understanding/label-in-name.html

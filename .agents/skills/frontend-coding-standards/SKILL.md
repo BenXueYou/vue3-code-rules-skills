@@ -28,6 +28,8 @@ description: Apply the workspace-pilot Vue 3 frontend coding standards when gene
    交付中列出相关 PENDING 项即可。
 4. 规则只约束本次的**触及代码**：新建代码，以及为完成当前任务直接修改的文件和
    区域。不要为统一格式而扩大 diff。
+5. 生成或修改模板、渲染函数及交互组件时，逐项执行 `FCS-036` 的可访问名称检查，
+   并在交付反馈中记录检查范围、结果及尚未验证的组件或状态。
 
 ## 存量代码与冲突边界
 

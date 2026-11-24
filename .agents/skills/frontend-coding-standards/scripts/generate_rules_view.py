@@ -11,14 +11,16 @@ import yaml
 
 
 def format_source(source: dict[str, Any]) -> str:
-    """将规则的 Markdown 与 PDF 来源整理为一段可读文本。"""
+    """将规则的 Markdown 需求来源、PDF 证据和参考规范整理为可读文本。"""
     markdown = source["markdown"]
-    pdf = source["pdf"]
-    pages = ", ".join(str(page) for page in pdf["pages"])
-    return (
-        f"Markdown: `{markdown['file']}` — {markdown['section']}<br>"
-        f"PDF: `{pdf['file']}` — 第 {pages} 页"
-    )
+    parts = [f"Markdown: `{markdown['file']}` — {markdown['section']}"]
+    if "pdf" in source:
+        pdf = source["pdf"]
+        pages = ", ".join(str(page) for page in pdf["pages"])
+        parts.append(f"PDF: `{pdf['file']}` — 第 {pages} 页")
+    for reference in source.get("references", []):
+        parts.append(f"参考：[{reference['title']}]({reference['url']})")
+    return "<br>".join(parts)
 
 
 def generate(source_path: Path, output_path: Path) -> None:

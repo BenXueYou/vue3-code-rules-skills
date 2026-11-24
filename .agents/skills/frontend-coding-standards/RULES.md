@@ -8,7 +8,7 @@
 
 ACTIVE 规则会在后续 Skill 实现中执行；PENDING 规则保留原始证据，等待适用条件或含义确认后才可执行。
 
-## ACTIVE（16 条）
+## ACTIVE（17 条）
 
 ### FCS-007 — 不允许连续出现两行及以上的空白行。
 
@@ -137,6 +137,14 @@ ACTIVE 规则会在后续 Skill 实现中执行；PENDING 规则保留原始证�
 - 判定：新增全局状态优先建模为 Pinia store，而不是直接变更全局对象。
 - 例外：现有状态库、微前端共享状态和小型局部状态可按项目约定处理。
 - 来源：Markdown: `前端开发编码规范.md` — #### 8、Hooks方法规范<br>PDF: `前端开发编码规范.pdf` — 第 13 页
+
+### FCS-036 — 生成或修改交互控件时必须检查可访问名称；缺少有效名称且没有可关联的可见标签时，自动补足 aria-label。
+
+- 强度：`MUST`
+- 适用：Vue SFC template、TypeScript 与 JavaScript 渲染函数、交互组件
+- 判定：逐一检查触及代码中的按钮、链接、表单控件及其他需要名称的交互元素。 保留已有有效的 aria-label、aria-labelledby、关联 label 或可作为名称的控件文字； 表单控件优先关联可见 label，其他有可见标签的控件优先使用 aria-labelledby， 无可用标签的纯图标按钮、无文字链接和无标签输入控件必须补足非空 aria-label。 名称使用与页面一致的语言及项目既有国际化方式，表达业务动作或用途； 存在可见标签文字时，名称必须包含该文字；×、箭头等作为图标的符号按实际用途命名。 重复操作需要区分对象时复用现有展示字段， 不使用变量名、图标名或“按钮”等泛称，不为命名新增数据请求或改变标识映射、事件、请求与提交逻辑。 名称随动作变化时使用动态绑定，例如“展开筛选”与“收起筛选”；状态另用适用的 ARIA 状态属性表达。 placeholder、title 或 tooltip 不能作为唯一标签方案。 自定义及第三方组件先核对已有 API、实现和属性透传路径，确保名称落在实际可聚焦的交互节点， 不能仅因组件标签上写了属性就判定生效。 交付前复核每个触及控件的名称来源、动态状态及生效节点； 有可运行环境时检查渲染后 DOM 或可访问性树，无环境时明确记录运行验证未执行。
+- 例外：已有有效名称的控件无需重复添加 aria-label；普通布局容器、静态文本、装饰性图标和隐藏元素不批量添加， 图片沿用适用的 alt 语义。未触及的存量代码仅报告。 无法从需求或上下文确认用途，或无法确认组件命名 API、透传路径时，记录具体未决点并说明尚未验证， 不猜测名称、虚构组件属性或将该项标记为通过。
+- 来源：Markdown: `docs/specs/frontend-coding-standards-skill.md` — ## 可访问名称约束的需求来源<br>参考：[W3C APG — Providing Accessible Names and Descriptions](https://www.w3.org/WAI/ARIA/apg/practices/names-and-descriptions/)<br>参考：[W3C WAI — Labeling Controls](https://www.w3.org/WAI/tutorials/forms/labels/)<br>参考：[W3C WCAG — Label in Name](https://www.w3.org/WAI/WCAG22/Understanding/label-in-name.html)
 
 ## PENDING（19 条）
 

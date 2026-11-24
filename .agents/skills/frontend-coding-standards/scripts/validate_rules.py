@@ -6,6 +6,7 @@ import re
 import sys
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 import yaml
 
@@ -86,17 +87,39 @@ def validate(source_path: Path) -> list[str]:
             continue
         markdown = sources.get("markdown")
         pdf = sources.get("pdf")
+        references = sources.get("references")
         if not isinstance(markdown, dict) or not all(
             isinstance(markdown.get(key), str) and markdown[key].strip()
             for key in ("file", "section")
         ):
             errors.append(f"{label} must cite a Markdown file and section.")
-        if not isinstance(pdf, dict) or not isinstance(pdf.get("file"), str) or not pdf["file"].strip():
-            errors.append(f"{label} must cite a PDF file.")
-        elif not isinstance(pdf.get("pages"), list) or not pdf["pages"] or not all(
-            isinstance(page, int) and page > 0 for page in pdf["pages"]
-        ):
-            errors.append(f"{label} must cite one or more positive PDF page numbers.")
+        if "pdf" not in sources and "references" not in sources:
+            errors.append(f"{label} must cite a PDF file or reference documents.")
+        if "pdf" in sources:
+            if not isinstance(pdf, dict) or not isinstance(pdf.get("file"), str) or not pdf["file"].strip():
+                errors.append(f"{label} must cite a PDF file.")
+            elif not isinstance(pdf.get("pages"), list) or not pdf["pages"] or not all(
+                isinstance(page, int) and page > 0 for page in pdf["pages"]
+            ):
+                errors.append(f"{label} must cite one or more positive PDF page numbers.")
+        if "references" in sources:
+            if not isinstance(references, list) or not references:
+                errors.append(f"{label} references must be a non-empty list.")
+            else:
+                for reference in references:
+                    if not isinstance(reference, dict) or not all(
+                        isinstance(reference.get(key), str) and reference[key].strip()
+                        for key in ("title", "url")
+                    ):
+                        errors.append(f"{label} references must have a title and URL.")
+                        continue
+                    try:
+                        url = urlparse(reference["url"])
+                        valid_url = url.scheme == "https" and bool(url.hostname)
+                    except ValueError:
+                        valid_url = False
+                    if not valid_url:
+                        errors.append(f"{label} reference URL must be an absolute HTTPS URL.")
 
     return errors
 

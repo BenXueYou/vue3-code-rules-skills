@@ -23,6 +23,7 @@ REQUIRED_CAPABILITIES = {
     "full_repo_migration_authorization",
     "rule_source_and_reading_view",
     "project_override_structure",
+    "accessible_names",
 }
 RELEASE_PATH = ["0.0.1", "0.1.0", "1.0.0"]
 RELEASE_CHANNELS = ["workspace-pilot", "local-default", "team-plugin"]
